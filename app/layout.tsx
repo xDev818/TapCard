@@ -28,9 +28,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} bg-primary`}>
-        <header>
+        
           <Navbar />
-        </header>
+      
         <main>
           {children}
           <HelpAndSupport />

@@ -1,5 +1,4 @@
-'use client';
-import * as React from "react";
+import React, { useState ,useEffect} from "react";
 
 // components
 import Paragraph from "@/components/Paragraph";
@@ -7,73 +6,83 @@ import Title from "@/components/Title";
 import Button from "@/components/Button";
 import Image from "next/image";
 
+
+
+import { 
+  getFirestore,
+  collection,
+  getDocs
+} from "firebase/firestore";
+
+import { auth, db } from "@/api/auth/auth";
+import { initializeApp } from "firebase/app";
+
 // static data
 import { CardsProducts } from "@/data/StaticData";
 
-import { db } from "@/api/auth/auth";
-import {  collection,addDoc} from "firebase/firestore"
+ export default function UsersView1() {
 
-import { toast } from "react-toastify";
+//   const firebaseConfig = {
 
-export default function ProductCatalog() {
+//     apiKey: "AIzaSyB32I80zNhKnFE-H3DE1SjmpE5q-ANQbuc",
+//    authDomain: "sinuous-cat-398020.firebaseapp.com",
+//    projectId: "sinuous-cat-398020",
+//    storageBucket: "sinuous-cat-398020.appspot.com",
+//    messagingSenderId: "158817927488",
+//    appId: "1:158817927488:web:8ce0e688611069cbedfaa5",
+//    measurementId: "G-NW1GT7GBKD"
+ 
+//    // apiKey: process.env.NEXT_PUBLIC_API_KEY,
+//    // authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
+//    // projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
+//    // storageBucket: process.env.NEXT_PUBLIC_STORAGE_BUCKET,
+//    // messagingSenderId: process.env.NEXT_PUBLIC_MESSAGING_ID,
+//    // appId: process.env.NEXT_PUBLIC_APP_ID
+//  };
+// initializeApp(firebaseConfig)
+//  const db = getFirestore()
 
-  const [values,setValues] = React.useState({
-    userid: "",
-    cardid: "",
-    qty:"",
-    price:"",
-    amount:0
-  
-  })
+const [Users,setUser] = useState([])
+let users = [];
 
-  const [valueQty,setQty] = React.useState({
-    qty:"",
-  })
+useEffect(() => {
 
-  //const addCard = document.querySelector('.add')
+ 
+  try {
+    
+    const colRef = collection(db,'users')
+
    
-  const handleChange = (e) => {
-
-    const val = e.target.value;
-    const name = e.target.name;
-
-    setQty({...valueQty,
-      [name]: val
-    })
-
-
-  
-  }
-
-  function handleAddProduct(event,cardid,qty,price) {
-      try {
-        const colRef = collection(db,'UsersCard')
-       // const addCard = docu document.querySelector('.add')
-        const total = qty * price;
-      
-        addDoc(colRef,{
-          userid: '1',
-          cardid: cardid,
-          qty: qty,
-          price: price,
-          amount: total
-
-        }).then(() => {
-          //addCard.reset()
-          toast.success(" Card successfully added", {
-            position: "top-center",
-            theme: "light",
-          });
-        }).catch(err => {
-            alert("not successful")
+       
+        getDocs(colRef)
+        .then((snapshot) => {
+          
+          snapshot.docs.map((user) => {
+            users.push ({
+              ...user.data(),
+              id: user.id,
+              
+            })
+           
+        })
+        setUser(users);
+        
+        console.log(users)
+        }) .catch(err => {
+          alert(err)
         })
 
-      } catch(err) {
-          console.log(err)
-      }
-    }
+
+      
+  } catch(err) {
+    alert(err)
+  }
+}, [])
+
+
 
   return (
+  
     <div className="max-w-[1200px] mx-auto mt-10 mb-20">
       <div className="text-center my-[70px]">
         <Title className="mb-0 text-secondary">
@@ -100,7 +109,7 @@ export default function ProductCatalog() {
                 className="lg:-mt-12"
               />
               <Title className="mb-0 -mt-16 font-bold lg:text-3xl ">
-                Php {card.price}
+                {card.price}
               </Title>
               <Paragraph
                 description={card.type}
@@ -111,13 +120,10 @@ export default function ProductCatalog() {
                 placeholder="0"
                 min={0}
                 className="outline-none border-2 border-secondary bg-transparent text-center py-1 rounded-md w-[170px] mt-4 no-spinners px-2 lg:border-primary"
-                onChange={handleChange} name="qty"
-                value={valueQty.qty}
               />
               <Button
                 variant="secondary"
                 className="uppercase font-semibold w-[170px] mt-2 py-[6px] rounded-md lg:bg-primary lg:text-secondary lg:hover:bg-standardBg lg:mt-3"
-                onClick={e => handleAddProduct(e,card.id,valueQty.qty,card.price,)}
               >
                 Add To Cart
               </Button>
@@ -126,5 +132,6 @@ export default function ProductCatalog() {
         ))}
       </div>
     </div>
+
   );
 }

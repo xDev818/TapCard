@@ -5,7 +5,8 @@ export const navbarLinks = [
     },
     {
       text: "services",
-      href: "#",
+      href: "/userscard-view"
+      //"/productcatalog",
     },
     {
       text: "shop",

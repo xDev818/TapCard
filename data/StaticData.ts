@@ -25,18 +25,24 @@ import PCARD from "@/public/Cards/pink.png";
 export const CardsProducts = [
     {
       img: WCARD,
-      price: "Php 1200.00",
+      name:"wcard",
+      price: "800.00",
       type: "Standard Card",
+      id: 1
     },
     {
       img: BCARD,
-      price: "Php 1200.00",
+      price: "1000.00",
+      name:"bcard",
       type: "Professional Card",
+      id: 2
     },
     {
       img: PCARD,
-      price: "Php 1200.00",
+      price: "1200.00",
+      name:"pcard",
       type: "Premium Card",
+      id: 3
     },
 ];
 
